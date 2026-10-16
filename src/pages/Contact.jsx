@@ -14,7 +14,7 @@ function Contact() {
           </p>
 
           <h1 className="text-4xl font-bold md:text-6xl">
-            Keling, bog‘lanamiz
+            Biz bilan bog'laning
           </h1>
 
           <p className="mt-6 max-w-2xl leading-8 text-[#C1D0DF]">
