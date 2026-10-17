@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Building2, Clock, Wrench, Zap } from "lucide-react";
+import {
+  ArrowRight,
+  Building2,
+  Clock,
+  MapPin,
+  MessageCircle,
+  Wrench,
+  Zap,
+} from "lucide-react";
 import ChaildServis from "../components/ChaildServis";
-
+import AboutChaild from "../components/AboutChaild";
+import Banner from "../components/Banner";
 // Hero fon rasmlari (har 6 soniyada almashadi).
 // Rasm almashtirmoqchi bo'lsangiz, faqat `src` ni o'zgartiring.
 // `tint` — rasm juda och bo'lsa, matn o'qilishi uchun yengil qoplama (bo'sh = qoplamasiz).
@@ -14,17 +23,32 @@ const HERO_SLIDES = [
   },
   {
     // 2. Elektromobillarni zaryadlash infratuzilmasi
-    src: "https://images.pexels.com/photos/9799724/pexels-photo-9799724.jpeg?auto=compress&cs=tinysrgb&w=2200",
+    src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNneK3JLHZVrcB1usiQp_h_QZYLTiTdP-ZQ9Hsa_gdveQzPfacW5FiPpLX&s=10",
     tint: "bg-[#10243A]/15",
   },
   {
     // 3. Kompleks elektromontaj va elektr ta'minoti (yuqori kuchlanish liniyalari)
-    src: "https://images.pexels.com/photos/28912010/pexels-photo-28912010/free-photo-of-high-voltage-power-lines-at-sunset.jpeg?auto=compress&cs=tinysrgb&w=2200",
+    src: "https://www.norma.uz/img/89/a3/a6fa97fb171829f39f96f2e34eb9.png",
     tint: "",
   },
 ];
 
 const HERO_INTERVAL = 6000;
+
+const HERO_TAGS = [
+  "Elektr montaj",
+  "Elektr ta’minoti",
+  "Yoritish tizimlari",
+  "Quyosh panellari",
+  "Elektromobillar uchun zaryadlash stansiyalari",
+];
+
+const HERO_STATS = [
+  { value: "15+", label: "Yillik tajriba", icon: Clock },
+  { value: "250+", label: "Bitkazilgan obyektlar", icon: Building2 },
+  { value: "10+", label: "Xizmat turlari", icon: Wrench },
+  { value: "14", label: "Hududning barchasida ishlaymiz", icon: MapPin },
+];
 
 function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -36,14 +60,6 @@ function Home() {
 
     return () => clearInterval(timer);
   }, []);
-
-  const heroTags = [
-    "Elektr montaj",
-    "Elektr ta’minoti",
-    "Yoritish tizimlari",
-    "Quyosh panellari",
-    "Elektromobillar uchun zaryadlash stansiyalari",
-  ];
 
   return (
     <main className="overflow-hidden bg-white text-[#10243A]">
@@ -61,6 +77,7 @@ function Home() {
               <img
                 src={slide.src}
                 alt=""
+                loading={index === 0 ? "eager" : "lazy"}
                 className="h-full w-full object-cover"
               />
               {slide.tint && (
@@ -95,7 +112,7 @@ function Home() {
 
             {/* Xizmatlar — hoverli kapsulalar */}
             <ul className="mt-9 flex max-w-3xl flex-wrap gap-2.5">
-              {heroTags.map((tag) => (
+              {HERO_TAGS.map((tag) => (
                 <li
                   key={tag}
                   className="cursor-default rounded-full border border-white/30 bg-white/90 px-4 py-2 text-sm font-medium text-[#10243A] shadow-sm shadow-black/10 transition-colors duration-200 hover:bg-white md:text-[15px]"
@@ -104,98 +121,73 @@ function Home() {
                 </li>
               ))}
             </ul>
+          </div>
 
-            {/* Ko‘rsatkichlar */}
-            <div className="mt-12 grid max-w-4xl gap-5 sm:grid-cols-3">
-              {[
-                { value: "15+", label: "Yillik tajriba", icon: Clock },
-                {
-                  value: "250+",
-                  label: "Bitkazilgan obyektlar",
-                  icon: Building2,
-                },
-                { value: "10+", label: "Xizmat turlari", icon: Wrench },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="flex items-center gap-5 rounded-2xl border border-white/25 bg-[#10243A]/55 px-4 py-4 shadow-lg shadow-black/20 backdrop-blur-md"
-                >
-                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#35D07F]/20 text-[#35D07F]">
-                    <stat.icon className="h-7 w-7" aria-hidden="true" />
-                  </span>
+          {/* Ko‘rsatkichlar */}
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {HERO_STATS.map((stat) => (
+              <div
+                key={stat.label}
+                className="flex items-center gap-5 rounded-2xl border border-white/25 bg-[#10243A]/55 px-5 py-5 shadow-lg shadow-black/20 backdrop-blur-md"
+              >
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#35D07F]/20 text-[#35D07F]">
+                  <stat.icon className="h-7 w-7" aria-hidden="true" />
+                </span>
 
-                  <div>
-                    <p className="text-4xl font-semibold leading-none tracking-tight md:text-5xl">
-                      {stat.value}
-                    </p>
-                    <p className="mt-2 text-base text-white/90">{stat.label}</p>
-                  </div>
+                <div>
+                  <p className="text-4xl font-semibold leading-none tracking-tight md:text-5xl">
+                    {stat.value}
+                  </p>
+                  <p className="mt-2 text-base text-white/90">{stat.label}</p>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <ChaildServis />
-
-      {/* KOMPANIYA HAQIDA */}
-      <section className="bg-[#10243A] text-white">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-20">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#65C3F0]">
-              Elektroservis MRG
-            </p>
-
-            <h2 className="mt-4 text-3xl font-bold leading-tight md:text-4xl">
-              Har bir detal muhim. Har bir loyiha mas’uliyatdir.
-            </h2>
-          </div>
-
-          <div>
-            <p className="leading-8 text-[#C1D0DF]">
-              Elektr tizimlarida to‘g‘ri rejalashtirish, sifatli montaj va
-              xavfsizlik talablariga rioya qilish muhim. Biz har bir loyihaning
-              texnik ehtiyojlariga mos yechimlarni tanlashga intilamiz.
-            </p>
-
-            <Link
-              to="/about"
-              className="mt-6 inline-flex items-center gap-2 font-semibold text-[#65C3F0] transition hover:text-white"
-            >
-              Kompaniya haqida
-              <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Banner />
+      <AboutChaild />
 
       {/* YAKUNIY CTA */}
       <section className="mx-auto max-w-7xl px-6 py-20 md:py-24">
-        <div className="relative overflow-hidden rounded-2xl bg-[#E5F4FC] px-7 py-12 md:px-14 md:py-16">
-          <div className="absolute -right-10 -top-20 h-64 w-64 rounded-full bg-white/70 blur-3xl" />
+        <div className="relative overflow-hidden rounded-3xl border border-[#CFE6F5] bg-gradient-to-r from-[#E5F4FC] via-[#EEF8FD] to-[#E9F9F0] px-7 py-10 md:px-12 md:py-12">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-60"
+            style={{
+              backgroundImage:
+                "radial-gradient(rgba(16,36,58,0.08) 1px, transparent 1px)",
+              backgroundSize: "22px 22px",
+            }}
+          />
 
-          <div className="relative flex flex-col justify-between gap-8 md:flex-row md:items-center">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#2D9CDB]">
-                Keyingi qadam
-              </p>
-
-              <h2 className="mt-4 max-w-2xl text-3xl font-bold leading-tight md:text-4xl">
-                Loyihangiz uchun yechim izlayapsizmi?
-              </h2>
-
-              <p className="mt-4 max-w-xl leading-7 text-[#64778A]">
-                Biz bilan bog‘laning va loyihangiz haqida batafsil gaplashamiz.
-              </p>
+          <div className="relative flex flex-col justify-between gap-6 md:flex-row md:items-center">
+            <div className="flex items-start gap-5">
+              <span className="hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white text-[#2D9CDB] shadow-sm sm:flex">
+                <MessageCircle className="h-7 w-7" aria-hidden="true" />
+              </span>
+              <div>
+                <h2 className="text-2xl font-bold md:text-3xl">
+                  Loyihangiz uchun yechim izlayapsizmi?
+                </h2>
+                <p className="mt-2 text-[#64778A]">
+                  Biz bilan bog‘laning va loyihangiz haqida batafsil
+                  gaplashamiz.
+                </p>
+              </div>
             </div>
 
             <Link
               to="/contact"
-              className="inline-flex shrink-0 items-center justify-center gap-3 rounded-lg bg-[#2D9CDB] px-7 py-4 font-semibold text-white transition hover:bg-[#2186C0]"
+              className="group inline-flex shrink-0 items-center justify-center gap-2.5 rounded-xl bg-[#10243A] px-7 py-3.5 font-semibold text-white shadow-lg shadow-[#10243A]/15 transition-colors duration-300 hover:bg-[#2D9CDB]"
             >
               Biz bilan bog‘laning
-              <span aria-hidden="true">↗</span>
+              <ArrowRight
+                className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
+                aria-hidden="true"
+              />
             </Link>
           </div>
         </div>
