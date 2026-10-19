@@ -201,19 +201,19 @@ function Services() {
           className="absolute inset-0 -z-20 h-full w-full object-cover"
         />
 
-        <div className="mx-auto max-w-7xl px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24 md:py-32">
           <div className="max-w-2xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]">
             <p className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#35D07F]">
               <span className="h-px w-10 bg-[#35D07F]" aria-hidden="true" />
               Xizmatlar
             </p>
 
-            <h1 className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
+            <h1 className="mt-5 text-[2.1rem] font-bold leading-[1.1] tracking-tight sm:mt-6 sm:text-4xl md:text-6xl">
               Elektr tizimlari uchun{" "}
               <span className="text-[#35D07F]">to‘liq xizmat</span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-8 text-[#E2EAF2]">
+            <p className="mt-5 max-w-xl text-base leading-7 text-[#E2EAF2] sm:mt-6 sm:text-lg sm:leading-8">
               Sanoat korxonalari, yirik tashkilotlar va xususiy obyektlar uchun
               elektr ta’minoti, montaj va muhandislik yechimlari — loyihadan
               ishga tushirishgacha.
@@ -225,11 +225,11 @@ function Services() {
       {/* ===== 2. XIZMATLAR RO'YXATI ===== */}
       <section
         id="xizmatlar"
-        className="mx-auto max-w-7xl scroll-mt-24 px-6 py-16 md:py-20"
+        className="mx-auto max-w-7xl scroll-mt-24 px-5 py-12 sm:px-6 sm:py-16 md:py-20"
       >
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6 sm:gap-8">
           <div>
-            <h2 className="text-3xl font-bold leading-tight md:text-4xl">
+            <h2 className="text-[1.75rem] font-bold leading-tight sm:text-3xl md:text-4xl">
               Barcha xizmatlarimiz
             </h2>
             <p className="mt-3 text-[#64778A]">
@@ -241,7 +241,7 @@ function Services() {
           <div
             role="tablist"
             aria-label="Xizmat yo‘nalishlari"
-            className="-mx-6 flex gap-2 overflow-x-auto px-6 pb-1 sm:mx-0 sm:flex-wrap sm:px-0"
+            className="-mx-5 flex snap-x gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 [&::-webkit-scrollbar]:hidden"
           >
             {categories.map((item) => {
               const isActive = activeCategory === item.id;
@@ -253,7 +253,7 @@ function Services() {
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setActiveCategory(item.id)}
-                  className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                  className={`flex shrink-0 snap-start items-center gap-2 rounded-full border px-4 py-2.5 text-sm sm:py-2 font-medium transition-colors duration-200 ${
                     isActive
                       ? "border-[#10243A] bg-[#10243A] text-white"
                       : "border-[#DCE5ED] bg-white text-[#10243A] hover:border-[#2D9CDB] hover:text-[#2D9CDB]"
@@ -276,14 +276,14 @@ function Services() {
         </div>
 
         {/* Kartochkalar */}
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-5 sm:mt-10 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {visibleServices.map((service, index) => (
             <article
               key={service.title}
               className="group flex flex-col overflow-hidden rounded-2xl border border-[#DCE5ED] bg-white transition duration-300 hover:-translate-y-1 hover:border-[#2D9CDB] hover:shadow-xl hover:shadow-[#10243A]/10"
             >
               {/* Rasm */}
-              <div className="relative h-52 overflow-hidden bg-gradient-to-br from-[#1B3A5C] to-[#10243A]">
+              <div className="relative h-48 overflow-hidden sm:h-52 bg-gradient-to-br from-[#1B3A5C] to-[#10243A]">
                 {/* Zaxira: ikonka (rasm ochilmasa ko'rinadi) */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#35D07F]">
@@ -310,7 +310,7 @@ function Services() {
               </div>
 
               {/* Matn: ikonka chapda, sarlavha va tavsif yonida */}
-              <div className="flex flex-1 items-start gap-4 p-6">
+              <div className="flex flex-1 items-start gap-4 p-5 sm:p-6">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#E5F4FC] text-[#2D9CDB] transition-colors duration-300 group-hover:bg-[#2D9CDB] group-hover:text-white">
                   <service.icon className="h-6 w-6" aria-hidden="true" />
                 </span>
@@ -330,8 +330,8 @@ function Services() {
       </section>
 
       {/* ===== 3. BOG'LANISHGA CHAQIRIQ ===== */}
-      <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-24">
-        <div className="relative overflow-hidden rounded-3xl border border-[#CFE6F5] bg-gradient-to-r from-[#E5F4FC] via-[#EEF8FD] to-[#E9F9F0] px-7 py-10 md:px-12 md:py-12">
+      <section className="mx-auto max-w-7xl px-5 pb-14 sm:px-6 sm:pb-20 md:pb-24">
+        <div className="relative overflow-hidden rounded-3xl border border-[#CFE6F5] bg-gradient-to-r from-[#E5F4FC] via-[#EEF8FD] to-[#E9F9F0] px-5 py-8 sm:px-7 sm:py-10 md:px-12 md:py-12">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 opacity-60"
@@ -348,7 +348,7 @@ function Services() {
                 <MessageCircle className="h-7 w-7" aria-hidden="true" />
               </span>
               <div>
-                <h2 className="text-2xl font-bold md:text-3xl">
+                <h2 className="text-xl font-bold leading-snug sm:text-2xl md:text-3xl">
                   Loyihangizni muhokama qilamizmi?
                 </h2>
                 <p className="mt-2 text-[#64778A]">
@@ -359,7 +359,7 @@ function Services() {
 
             <Link
               to="/contact"
-              className="group inline-flex shrink-0 items-center justify-center gap-2.5 rounded-xl bg-[#10243A] px-7 py-3.5 font-semibold text-white shadow-lg shadow-[#10243A]/15 transition-colors duration-300 hover:bg-[#2D9CDB]"
+              className="group inline-flex w-full shrink-0 items-center justify-center gap-2.5 rounded-xl bg-[#10243A] px-7 md:w-auto py-3.5 font-semibold text-white shadow-lg shadow-[#10243A]/15 transition-colors duration-300 hover:bg-[#2D9CDB]"
             >
               Bog‘lanish
               <ArrowRight

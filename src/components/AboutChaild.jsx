@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ABOUT_POINTS, ABOUT_SLIDES } from "../data/aboutSlides";
 
 // Slayd almashish vaqti (ms). Ma'lumotlar va rasmlar: src/data/aboutSlides.js
 const SLIDE_INTERVAL = 5000;
+// Telefonda barmoq bilan surish: shu masofadan (px) ko'p bo'lsa slayd almashadi
+const SWIPE_THRESHOLD = 40;
 
 const slides = ABOUT_SLIDES;
 const points = ABOUT_POINTS;
@@ -15,13 +17,14 @@ const hideOnError = (event) => {
 };
 
 const arrowButton =
-  "flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-[#10243A]/50 text-white backdrop-blur-md transition-colors duration-200 hover:border-[#35D07F] hover:bg-[#35D07F] hover:text-[#0B1A2B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#35D07F]";
+  "flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-[#10243A]/50 text-white backdrop-blur-md transition-colors duration-200 hover:border-[#35D07F] hover:bg-[#35D07F] hover:text-[#0B1A2B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#35D07F] sm:h-10 sm:w-10";
 
 const pad = (n) => String(n).padStart(2, "0");
 
 function AboutChaild() {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef(null);
 
   const total = slides.length;
 
@@ -38,6 +41,42 @@ function AboutChaild() {
 
   const goPrev = () => setCurrent((prev) => (prev - 1 + total) % total);
   const goNext = () => setCurrent((prev) => (prev + 1) % total);
+
+  const handleTouchStart = (event) => {
+    touchStartX.current = event.touches[0].clientX;
+    setIsPaused(true);
+  };
+
+  const handleTouchEnd = (event) => {
+    if (touchStartX.current !== null) {
+      const deltaX = event.changedTouches[0].clientX - touchStartX.current;
+      if (deltaX > SWIPE_THRESHOLD) goPrev();
+      if (deltaX < -SWIPE_THRESHOLD) goNext();
+    }
+    touchStartX.current = null;
+    setIsPaused(false);
+  };
+
+  const arrows = (
+    <>
+      <button
+        type="button"
+        onClick={goPrev}
+        aria-label="Oldingi xizmat"
+        className={arrowButton}
+      >
+        <ArrowLeft className="h-5 w-5" aria-hidden="true" />
+      </button>
+      <button
+        type="button"
+        onClick={goNext}
+        aria-label="Keyingi xizmat"
+        className={arrowButton}
+      >
+        <ArrowRight className="h-5 w-5" aria-hidden="true" />
+      </button>
+    </>
+  );
 
   return (
     <section className="relative overflow-hidden bg-[#10243A] text-white">
@@ -65,17 +104,17 @@ function AboutChaild() {
         className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-[#35D07F]/15 blur-[100px]"
       />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 py-20 md:py-28 lg:grid-cols-2 lg:gap-20">
+      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-14 sm:gap-16 sm:px-6 sm:py-20 md:py-28 lg:grid-cols-2 lg:gap-20">
         {/* ===== CHAP: XIZMATLAR SLAYDERI ===== */}
         <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
           {/* Burchak bezaklari */}
           <div
             aria-hidden="true"
-            className="absolute -right-3 -top-3 h-28 w-28 rounded-tr-3xl border-r-2 border-t-2 border-[#35D07F]"
+            className="absolute -right-2 -top-2 h-20 w-20 rounded-tr-3xl border-r-2 border-t-2 border-[#35D07F] sm:-right-3 sm:-top-3 sm:h-28 sm:w-28"
           />
           <div
             aria-hidden="true"
-            className="absolute -bottom-3 -left-3 h-28 w-28 rounded-bl-3xl border-b-2 border-l-2 border-[#2D9CDB]/60"
+            className="absolute -bottom-2 -left-2 h-20 w-20 rounded-bl-3xl border-b-2 border-l-2 border-[#2D9CDB]/60 sm:-bottom-3 sm:-left-3 sm:h-28 sm:w-28"
           />
 
           <div
@@ -84,7 +123,9 @@ function AboutChaild() {
             aria-label="Xizmat turlari"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
-            className="relative h-[360px] overflow-hidden rounded-3xl bg-[#0B1A2B] ring-1 ring-white/10 md:h-[480px]"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            className="relative h-[400px] touch-pan-y overflow-hidden rounded-3xl bg-[#0B1A2B] ring-1 ring-white/10 sm:h-[440px] md:h-[480px]"
           >
             {/* Rasmlar */}
             {slides.map((slide, index) => (
@@ -95,9 +136,12 @@ function AboutChaild() {
                   index === current ? "opacity-100" : "opacity-0"
                 }`}
               >
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#1B3A5C] to-[#0B1A2B] pb-24">
-                  <span className="flex h-28 w-28 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#35D07F]">
-                    <slide.icon className="h-12 w-12" aria-hidden="true" />
+                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#1B3A5C] to-[#0B1A2B] pb-32 sm:pb-24">
+                  <span className="flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#35D07F] sm:h-28 sm:w-28">
+                    <slide.icon
+                      className="h-10 w-10 sm:h-12 sm:w-12"
+                      aria-hidden="true"
+                    />
                   </span>
                 </div>
 
@@ -106,6 +150,7 @@ function AboutChaild() {
                     src={slide.image}
                     alt={slide.title}
                     loading={index === 0 ? "eager" : "lazy"}
+                    draggable="false"
                     onError={hideOnError}
                     className="absolute inset-0 h-full w-full object-cover"
                   />
@@ -114,7 +159,7 @@ function AboutChaild() {
             ))}
 
             {/* Pastki qoplama: matn o'qilishi uchun */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1A2B]/95 via-[#0B1A2B]/25 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1A2B]/95 via-[#0B1A2B]/35 to-transparent sm:via-[#0B1A2B]/25" />
 
             {/* Hisoblagich */}
             <span className="absolute right-4 top-4 rounded-full border border-white/20 bg-[#10243A]/60 px-3 py-1 text-xs font-semibold tracking-wider backdrop-blur-md">
@@ -122,7 +167,7 @@ function AboutChaild() {
             </span>
 
             {/* Pastki qism: xizmat nomi va strelkalar */}
-            <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
+            <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 md:p-6">
               <div className="flex items-end justify-between gap-4">
                 {/* Sarlavhalar bir joyda ustma-ust turadi, faqat faoli ko'rinadi */}
                 <div className="grid min-w-0 flex-1">
@@ -143,7 +188,7 @@ function AboutChaild() {
                         <h3 className="text-base font-semibold leading-snug md:text-lg">
                           {slide.title}
                         </h3>
-                        <p className="mt-1 text-sm leading-6 text-[#C1D0DF]">
+                        <p className="mt-1 line-clamp-2 text-sm leading-6 text-[#C1D0DF] sm:line-clamp-none">
                           {slide.description}
                         </p>
                       </div>
@@ -151,32 +196,19 @@ function AboutChaild() {
                   ))}
                 </div>
 
-                <div className="flex shrink-0 gap-2">
-                  <button
-                    type="button"
-                    onClick={goPrev}
-                    aria-label="Oldingi xizmat"
-                    className={arrowButton}
-                  >
-                    <ArrowLeft className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={goNext}
-                    aria-label="Keyingi xizmat"
-                    className={arrowButton}
-                  >
-                    <ArrowRight className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                </div>
+                {/* Strelkalar: planshet va desktopda sarlavha yonida */}
+                <div className="hidden shrink-0 gap-2 sm:flex">{arrows}</div>
               </div>
 
-              {/* Progress chizig'i */}
-              <div className="mt-5 h-1 overflow-hidden rounded-full bg-white/15">
-                <div
-                  className="h-full rounded-full bg-[#35D07F] transition-all duration-500 motion-reduce:transition-none"
-                  style={{ width: `${((current + 1) / total) * 100}%` }}
-                />
+              {/* Progress chizig'i (telefonda strelkalar shu qatorda) */}
+              <div className="mt-4 flex items-center gap-3 sm:mt-5">
+                <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/15">
+                  <div
+                    className="h-full rounded-full bg-[#35D07F] transition-all duration-500 motion-reduce:transition-none"
+                    style={{ width: `${((current + 1) / total) * 100}%` }}
+                  />
+                </div>
+                <div className="flex shrink-0 gap-2 sm:hidden">{arrows}</div>
               </div>
             </div>
           </div>
@@ -189,20 +221,20 @@ function AboutChaild() {
             Elektroservis MRG
           </p>
 
-          <h2 className="mt-5 text-3xl font-bold leading-tight md:text-5xl">
+          <h2 className="mt-5 text-[1.75rem] font-bold leading-tight sm:text-3xl md:text-5xl">
             Har bir detal muhim.
             <span className="mt-1 block bg-gradient-to-r from-[#35D07F] to-[#65C3F0] bg-clip-text pb-1 text-transparent">
               Har bir loyiha — mas’uliyat.
             </span>
           </h2>
 
-          <p className="mt-6 max-w-xl leading-8 text-[#C1D0DF]">
+          <p className="mt-5 max-w-xl leading-7 text-[#C1D0DF] sm:mt-6 sm:leading-8">
             Elektr tizimlarida to‘g‘ri rejalashtirish, sifatli montaj va
             xavfsizlik talablariga rioya qilish muhim. Biz har bir loyihaning
             texnik ehtiyojlariga mos yechimlarni tanlashga intilamiz.
           </p>
 
-          <ul className="mt-8 space-y-3">
+          <ul className="mt-7 space-y-3 sm:mt-8">
             {points.map((point) => (
               <li
                 key={point.title}
@@ -223,7 +255,7 @@ function AboutChaild() {
 
           <Link
             to="/about"
-            className="group mt-9 inline-flex items-center gap-3 rounded-xl bg-[#35D07F] px-7 py-3.5 font-semibold text-[#0B1A2B] transition-colors duration-300 hover:bg-white"
+            className="group mt-8 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#35D07F] px-7 py-3.5 font-semibold text-[#0B1A2B] transition-colors duration-300 hover:bg-white sm:mt-9 sm:w-auto"
           >
             Kompaniya haqida
             <ArrowRight

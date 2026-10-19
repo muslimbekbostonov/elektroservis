@@ -1,15 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Check, Languages } from "lucide-react";
 
-const LOGO_SRC =
-  "/src/assets/imags/photo_2026-10-14_15-42-52-removebg-preview.png";
+// =====================================================================
+// TIL TANLASH — VAQTINCHA O'CHIRILGAN.
+// Tarjima tizimi ulanganda shu faylda "TIL TANLASH" deb belgilangan
+// barcha izohlarni (commentlarni) ochish kifoya. Yana qilinadigani:
+//   1) yuqoridagi importni `useRef` bilan qaytarish:
+//      import { useEffect, useRef, useState } from "react";
+//   2) pastdagi lucide importini ochish.
+// =====================================================================
+// import { Check, Languages } from "lucide-react";
 
-const languages = [
-  { code: "UZ", label: "O‘zbek" },
-  { code: "RU", label: "Русский" },
-  { code: "ENG", label: "English" },
-];
+// Logo import qilinadi — shunda build'dan keyin ham to'g'ri yo'l bilan chiqadi
+import logo from "../assets/imags/photo_2026-10-14_15-42-52-removebg-preview.png";
+
+// TIL TANLASH
+// const languages = [
+//   { code: "UZ", label: "O‘zbek" },
+//   { code: "RU", label: "Русский" },
+//   { code: "ENG", label: "English" },
+// ];
 
 const navItems = [
   { to: "/", label: "Bosh sahifa", end: true },
@@ -19,18 +29,20 @@ const navItems = [
 ];
 
 function Navbar() {
-  const [selectedLanguage, setSelectedLanguage] = useState("UZ");
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  // TIL TANLASH
+  // const [selectedLanguage, setSelectedLanguage] = useState("UZ");
+  // const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const languageRef = useRef(null);
+  // TIL TANLASH
+  // const languageRef = useRef(null);
 
   // Escape bilan yopish
   useEffect(() => {
     function handleKeyDown(event) {
       if (event.key === "Escape") {
         setIsMobileMenuOpen(false);
-        setIsLanguageOpen(false);
+        // setIsLanguageOpen(false); // TIL TANLASH
       }
     }
 
@@ -50,32 +62,44 @@ function Navbar() {
     };
   }, [isMobileMenuOpen]);
 
-  // Til menyusidan tashqariga bosilganda yopish
+  // Ekran kengayib desktopga o'tganda mobil menyuni yopish
   useEffect(() => {
-    function handleOutsideClick(event) {
-      if (languageRef.current && !languageRef.current.contains(event.target)) {
-        setIsLanguageOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    document.addEventListener("touchstart", handleOutsideClick);
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-      document.removeEventListener("touchstart", handleOutsideClick);
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const handleChange = (event) => {
+      if (event.matches) setIsMobileMenuOpen(false);
     };
+
+    mq.addEventListener("change", handleChange);
+    return () => mq.removeEventListener("change", handleChange);
   }, []);
 
-  function handleLanguageChange(code) {
-    setSelectedLanguage(code);
-    setIsLanguageOpen(false);
-    // Keyingi bosqichda tanlangan tilni tarjimalar tizimiga ulaymiz.
-  }
+  // TIL TANLASH: til menyusidan tashqariga bosilganda yopish
+  // useEffect(() => {
+  //   function handleOutsideClick(event) {
+  //     if (languageRef.current && !languageRef.current.contains(event.target)) {
+  //       setIsLanguageOpen(false);
+  //     }
+  //   }
+  //
+  //   document.addEventListener("mousedown", handleOutsideClick);
+  //   document.addEventListener("touchstart", handleOutsideClick);
+  //
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleOutsideClick);
+  //     document.removeEventListener("touchstart", handleOutsideClick);
+  //   };
+  // }, []);
+
+  // TIL TANLASH
+  // function handleLanguageChange(code) {
+  //   setSelectedLanguage(code);
+  //   setIsLanguageOpen(false);
+  //   // Keyingi bosqichda tanlangan tilni tarjimalar tizimiga ulaymiz.
+  // }
 
   function closeMobileMenu() {
     setIsMobileMenuOpen(false);
-    setIsLanguageOpen(false);
+    // setIsLanguageOpen(false); // TIL TANLASH
   }
 
   const linkStyle = ({ isActive }) =>
@@ -89,18 +113,18 @@ function Navbar() {
     <>
       {/* ASOSIY NAVBAR */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#10243A]">
-        <nav className="mx-auto flex h-[82px] max-w-[1440px] items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+        <nav className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between gap-4 px-4 sm:h-[82px] sm:gap-6 sm:px-6 lg:px-8">
           {/* LOGO (chapda) */}
           <NavLink
             to="/"
             aria-label="Elektroservis MRG bosh sahifasi"
             onClick={closeMobileMenu}
-            className="block shrink-0"
+            className="block min-w-0 shrink-0"
           >
             <img
-              src={LOGO_SRC}
+              src={logo}
               alt="Elektroservis MRG"
-              className="block h-12 w-auto object-contain sm:h-14 lg:h-16"
+              className="block h-11 w-auto max-w-[180px] object-contain sm:h-14 sm:max-w-none lg:h-16"
             />
           </NavLink>
 
@@ -120,9 +144,9 @@ function Navbar() {
               ))}
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* TIL TANLASH */}
-              <div ref={languageRef} className="relative">
+            <div className="flex items-center gap-1 sm:gap-3">
+              {/* TIL TANLASH — vaqtincha o‘chirilgan
+                            <div ref={languageRef} className="relative">
                 <button
                   type="button"
                   aria-label="Tilni almashtirish"
@@ -132,7 +156,7 @@ function Navbar() {
                     setIsLanguageOpen((prev) => !prev);
                     setIsMobileMenuOpen(false);
                   }}
-                  className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#35D07F] ${
+                  className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#35D07F] ${
                     isLanguageOpen
                       ? "bg-white/10 text-[#35D07F]"
                       : "text-white hover:bg-white/10 hover:text-[#35D07F]"
@@ -141,7 +165,7 @@ function Navbar() {
                   <Languages className="h-5 w-5" aria-hidden="true" />
                 </button>
 
-                {/* TIL DROPDOWN */}
+                (til dropdown)
                 <div
                   role="listbox"
                   aria-label="Tillar"
@@ -182,6 +206,7 @@ function Navbar() {
                   })}
                 </div>
               </div>
+              */}
 
               {/* MOBIL HAMBURGER */}
               <button
@@ -193,9 +218,9 @@ function Navbar() {
                 aria-controls="mobile-navigation"
                 onClick={() => {
                   setIsMobileMenuOpen((prev) => !prev);
-                  setIsLanguageOpen(false);
+                  // setIsLanguageOpen(false); // TIL TANLASH
                 }}
-                className="flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-[#35D07F] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#35D07F] lg:hidden"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/10 hover:text-[#35D07F] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#35D07F] lg:hidden"
               >
                 <span className="relative flex h-5 w-5 items-center justify-center">
                   <span
@@ -243,7 +268,7 @@ function Navbar() {
 
         <div
           id="mobile-navigation"
-          className={`absolute inset-0 flex flex-col bg-[#10243A] px-6 pb-8 pt-[100px] transition-[opacity,transform] duration-200 ease-out sm:px-10 ${
+          className={`absolute inset-0 flex flex-col overflow-y-auto overscroll-contain bg-[#10243A] px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[92px] transition-[opacity,transform] duration-200 ease-out sm:px-10 sm:pt-[100px] ${
             isMobileMenuOpen
               ? "translate-y-0 opacity-100"
               : "-translate-y-2 opacity-0"
@@ -270,8 +295,8 @@ function Navbar() {
             ))}
           </nav>
 
-          {/* MOBIL TIL TANLASH */}
-          <div className="mt-auto pt-8">
+          {/* TIL TANLASH (mobil) — vaqtincha o‘chirilgan
+                    <div className="mt-auto pt-8">
             <div className="grid grid-cols-3 gap-2">
               {languages.map((language) => {
                 const isSelected = selectedLanguage === language.code;
@@ -294,6 +319,7 @@ function Navbar() {
               })}
             </div>
           </div>
+          */}
         </div>
       </div>
     </>
